@@ -6,6 +6,13 @@
 | lambda | public.ecr.aws/lambda/python:3.12 | Lambdaコンテナ。[コンテナイメージを使用した Lambda 関数の作成](https://docs.aws.amazon.com/ja_jp/lambda/latest/dg/images-create.html)| 
 | localstack | localstack/localstack | LocalStackコンテナ。SSMパラメータストアを疑似的に再現。[LocalStack](https://www.localstack.cloud/)|
 
+## 要追加ファイル
+
+| パス | 記載概要 |
+| :-- | :-- |
+| ./.env | 環境変数 |
+| ./localstack/.params.txt | SSMパラメータ(ローカル用)。主にシークレット情報を記載。|
+
 ## ローカル起動方法
 **前提環境**
 - Docker
