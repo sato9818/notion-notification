@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Build started on `date`
+      - echo Logging in to Amazon ECR
+      - aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin $REPO
+
+  build:
+    commands:
+      - echo Building Docker image
+      - docker build -t $REPO .
+      - echo Pushing Docker image to ECR
+      - docker push $REPO:latest
+  post_build:
+    commands:
+      - echo Update Lambda
+      - |
+        if aws lambda get-function --function-name $LAMBDA_FUNCTION_NAME; then
+          echo "Lambda function exists. Updating the function code..."
+          aws lambda update-function-code --function-name $LAMBDA_FUNC --image-uri $REPO:latest
+        else
+          echo "Lambda function does not exist. Creating a new function..."
+          aws lambda create-function \
+            --function-name $LAMBDA_FUNCTION_NAME \
+            --package-type Image \
+            --code ImageUri=$REPO:latest \
+            --role $ROLE_ARN
+        fi
+      
+      - echo Build completed on `date`
