@@ -2,7 +2,7 @@ from notion_api_client import NotionApiClient
 from datetime import datetime, timedelta, timezone
 import parameter_store
 
-KOKI_ID, SHUYA_ID =  parameter_store.get_params('KOKI_ID', 'SHUYA_ID')
+KOKI_ID, SHUYA_ID = parameter_store.get_params('KOKI_ID', 'SHUYA_ID')
 
 def build_payload():
     JST = timezone(timedelta(hours=+9), 'JST')

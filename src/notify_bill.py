@@ -1,6 +1,6 @@
 import create_bill
-from line_notifier import LineNotifier
+from messaging_api_client import MessagingApiClient
 
 def handler(event, context):
     message = create_bill.build_message()
-    LineNotifier.send(message)
+    MessagingApiClient.send(message)
