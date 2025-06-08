@@ -2,25 +2,26 @@ from notion_api_client import NotionApiClient
 from datetime import datetime, timedelta, timezone
 import parameter_store
 
-KOKI_ID, SHUYA_ID =  parameter_store.get_params('KOKI_ID', 'SHUYA_ID')
+KOKI_ID, SHUYA_ID = parameter_store.get_params('KOKI_ID', 'SHUYA_ID')
 
 def build_payload():
     JST = timezone(timedelta(hours=+9), 'JST')
-    last_day_of_month = (datetime.now(JST) - timedelta(days=1)).replace(hour=23, minute=59, second=59, microsecond=999999)
-    first_day_of_month = last_day_of_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    first_day_of_this_month = datetime.now(JST).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    first_day_of_last_month = (first_day_of_this_month - timedelta(days=1)).replace(day=1)
     payload = {
         "filter": {
             "and": [
                 {
                     "timestamp": "created_time",
                     "created_time": {
-                        "on_or_after": datetime.strftime(first_day_of_month, '%Y-%m-%dT%H:%M:%S%z')
+                        "on_or_after": datetime.strftime(first_day_of_last_month, '%Y-%m-%dT%H:%M:%S%z')
                     }
                 }, 
                 {
                     "timestamp": "created_time",
                     "created_time": {
-                        "on_or_before": datetime.strftime(last_day_of_month, '%Y-%m-%dT%H:%M:%S%z')
+                        "before": datetime.strftime(first_day_of_this_month, '%Y-%m-%dT%H:%M:%S%z')
                     }
                 }
             ]
